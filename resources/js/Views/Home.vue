@@ -47,7 +47,7 @@
             <CCol sm="6">
                 <CRow>
                     <CCol sm=7>
-                        <Product v-for="product in products" :key="product.node.id" :product="product"></Product>
+                        <Product v-for="product in products" :key="product.id" :product="product"></Product>
                     </CCol>
                 </CRow>
             </CCol>
@@ -55,7 +55,7 @@
                 <CRow>
                     <CCol sm="7" class="mb-0">
                         <h4>Your wishlist:</h4>
-                        <Product v-for="product in wishlist" :key="product.node.id" :product="product"></Product>
+                        <Product v-for="product in wishlist" :key="product.id" :product="product" :wishlist="true"></Product>
                     </CCol>
                     <CCol sm="5">
                         <CButton

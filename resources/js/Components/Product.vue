@@ -2,19 +2,25 @@
 <CRow>
     <CCol sm=6>
         <CImg
-            :src="image"
+            :src="instance.image"
             thumbnail
             class="mb-2"
             block
         />
     </CCol>
     <CCol sm=6>
-        <strong>{{title}}</strong>
+        <strong>{{instance.title}}</strong>
         <br>
-        ${{minPrice}} - ${{maxPrice}}
+        ${{instance.minPrice}} - ${{instance.maxPrice}}
         <br>
-        <CLink v-if="!inWishlist" @click="saveToWishlist(product)">Save To Wishlist</CLink>
-        <CLink v-else @click="removeFromWishlist(product)">Remove</CLink>
+        <div v-if="wishlist">
+            <p>Added {{getTime}}</p>
+            <CLink @click="removeFromWishlist(instance)">Remove</CLink>
+        </div>
+        <div v-else>
+            <CLink v-if="!instance.addedToWishlist" @click="saveToWishlist(instance)">Save To Wishlist</CLink>
+            <label v-else class="text-primary">Saved!</label>
+        </div>
         
     </CCol>
 </CRow>
@@ -22,35 +28,54 @@
 </template>
 <script>
 export default {
-    props: ["product"],
+    props: {
+        product: {
+            type: Object,
+            default: {}
+        },
+        wishlist: {
+            type: Boolean,
+            default: false
+        }
+    },
     data() {
         return {
-            title: "",
-            image: "",
-            minPrice: 0,
-            maxPrice: 0,
-            id: '',
-            inWishlist: false,
+            instance: {
+                title: "",
+                image: "",
+                minPrice: 0,
+                maxPrice: 0,
+                id: '',
+                addedToWishlist: false,
+            }
+        }
+    },
+
+    watch: {
+        product: {
+            handler(newValue) {
+                this.instance = newValue
+            },
+            deep: true
+        }
+    },
+
+    computed: {
+        getTime(){
+            return moment(this.instance.addedToWishlist).fromNow();
         }
     },
 
     mounted() {
-        this.title = this.product.node.title
-        this.image = this.product.node.images.edges[0] ? this.product.node.images.edges[0].node.originalSrc : ""
-        this.minPrice = this.product.node.priceRange.minVariantPrice.amount
-        this.maxPrice = this.product.node.priceRange.maxVariantPrice.amount
-        this.id = this.product.node.id
-        this.inWishlist = this.product.inWishlist != undefined ? true:false
+        this.instance = this.product
     },
 
     methods: {
         saveToWishlist(product){
             this.$store.commit("addProductToWishlist", product)
-            product.inWishlist = true;
         },
         removeFromWishlist(product){
             this.$store.commit("removeProductFromWishlist", product)
-            product.inWishlist=false;
         }
     }
 }

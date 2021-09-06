@@ -23,33 +23,58 @@ export default new Vuex.Store({
             state.email = email;
         },
         setProducts: function (state, products){
-            state.products = products;
+            state.products = [];
+            products.forEach(product => {
+                let localProduct = {
+                    id: product.node.id,
+                    title: product.node.title,
+                    minPrice: product.node.priceRange.minVariantPrice.amount,
+                    maxPrice: product.node.priceRange.maxVariantPrice.amount,
+                    image: product.node.images.edges[0] ? product.node.images.edges[0].node.originalSrc : "",
+                    addedToWishlist: ''
+                }
+                state.wishlist.forEach(item => {
+                    if(item.id == localProduct.id){
+                        localProduct.addedToWishlist = new Date()
+                    }
+                })
+                console.log("Inside setting products addedToWishlist", localProduct.addedToWishlist)
+                state.products.push(localProduct)
+            });
         },
         
         addProductToWishlist: function (state, product){
             let already_exists = false;
             state.wishlist.forEach(element => {
-                if(element.node.id == product.node.id){
+                if(element.id == product.id){
                     already_exists = true;
                 }
             });
             console.log(already_exists);
             if(!already_exists){
-                product.inWishlist = true;
+                product.addedToWishlist = new Date();
                 state.wishlist.push(Object.assign({},product))
             }
+            state.products.forEach(item => {
+                if(item.id == product.id){
+                    item.addProductToWishlist = new Date();
+                }
+            })
         },
 
         removeProductFromWishlist: function (state, product){
-            const index = state.wishlist.indexOf(product);
-            console.log("INDEX", index);
-            if(index !== -1){
-                state.wishlist.splice(index,1)
-            }
+            state.wishlist = state.wishlist.filter(item => {return item.id != product.id});
+
+            state.products.forEach(item => {
+                if(item.id == product.id){
+                    item.addedToWishlist = ''
+                }
+            } )
         },
 
         clearWishlist: function (state){
             state.wishlist = [];
+            state.products.forEach(product => {product.addedToWishlist = ''})
         }
     },
     actions: {
