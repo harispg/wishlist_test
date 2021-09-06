@@ -39943,12 +39943,11 @@ var render = function() {
                   _vm._v(" "),
                   _c(
                     "CCol",
-                    { staticClass: "mt-4", attrs: { sm: "2" } },
+                    { staticClass: "pt-4", attrs: { sm: "2" } },
                     [
                       _c(
                         "CButton",
                         {
-                          staticClass: "m-2",
                           attrs: { color: "primary", variant: "outline" },
                           on: {
                             click: function($event) {

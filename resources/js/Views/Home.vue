@@ -31,11 +31,11 @@
                         placeholder="123"
                         />
                     </CCol>
-                    <CCol sm=2 class="mt-4">
+                    <CCol sm=2 class="pt-4">
                         <CButton
                             color="primary"
                             variant="outline"
-                            class="m-2"
+                            
                             @click="submit()"
                         >Search</CButton>
                     </CCol>
